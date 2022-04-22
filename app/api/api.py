@@ -5,16 +5,16 @@ from fuzzywuzzy import process
 db = MockDB.db
 
 def get_all_opportunities():
-    return [db['opps'].items()]
+    return [*b['opps'].items()]
 
 def get_all_users():
-    return [db['users'].items()]
+    return [*db['users'].items()]
 
 def get_all_orgs():
-    return [db['orgs'].items()]
+    return [*db['orgs'].items()]
 
 def get_all_keywords():
-    return [db['matches'].items()]
+    return [*db['matches'].items()]
 
 def _add_org(org: str) -> None:
     '''Helper checks if org exists, adds it if it does not'''
