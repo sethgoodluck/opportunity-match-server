@@ -5,7 +5,7 @@ from thefuzz import process
 db = MockDB.db
 
 def get_all_opportunities():
-    return [*b['opps'].items()]
+    return [*db['opps'].items()]
 
 def get_all_users():
     return [*db['users'].items()]
