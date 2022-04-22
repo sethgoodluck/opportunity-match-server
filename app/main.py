@@ -1,39 +1,9 @@
 import uuid
 from fastapi import FastAPI
 
+from app.config import description, tags_metadata
 from app.api import api
-
-description = """
-This is a simple webserver that allows us to return matches on users and organizations using Levenshtein Distance to fuzzy match user interests against opportunities.
-Please note that the data loaded is stored locally on the server and not connected to a persistent data store, so restarting the server will clear any loaded data.
-
-More information is available in the README.md file
-
-Created by Seth Martin
-"""
-
-tags_metadata = [
-    {
-        "name": "matches",
-        "description": "Allows you to get matches and do paging as needed or filtering",
-    },
-    {
-        "name": "opportunities",
-        "description": "Add or view opportunities and keywords",
-    },
-     {
-        "name": "users",
-        "description": "You can add users and view users",
-    },
-    {
-        "name": "organizations",
-        "description": "You can view all of the organizations",
-    },
-    {
-        "name": "server",
-        "description": "Checks server status",
-    },
-]
+from app.db.Models import Opportunity, User
 
 app = FastAPI(
     title="Opportunity Match Server",
@@ -74,7 +44,6 @@ def _paginate(data, page_num, page_size):
 
     return resp
 
-
 # ROOT / HEARTBEAT ENDPOINT
 @app.get("/", tags=["server"])
 def check_server():
@@ -105,7 +74,7 @@ async def get_matches_by_user(user_id: str, page_num: int = 1, page_size: int = 
 
 # OPPORTUNITY ENDPOINTS
 @app.post("/opportunities", tags=["opportunities"])
-async def add_opportunities(oppList: list):
+async def add_opportunities(oppList: list[Opportunity]):
     # Adds new opportunities
     # Expects a list of opportunity objects
     records_added = api.add_opportunities(oppList)
@@ -126,9 +95,7 @@ async def get_keywords(page_num: int = 1, page_size: int = 10):
 
 # USER ENDPOINTS
 @app.post("/users", tags=["users"])
-# Adds new users
-# Expects a list of user objects
-async def add_users(userList: list):
+async def add_users(userList: list[User]):
     users_added = api.add_users(userList)
     return {"users added": users_added}
 

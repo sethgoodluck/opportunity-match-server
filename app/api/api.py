@@ -45,7 +45,7 @@ def _process_interests(user):
     '''Processes a user interest list against keywords using he Levenshtein Distance metric
     made available through fuzzywuzzy. When the score is greater than 60%, we consider it a match. 
     '''
-    interests = user.get('interested_in', [])
+    interests = user.interested_in
     keywords = db['matches'].keys()
 
     for keyword in keywords:
@@ -53,8 +53,8 @@ def _process_interests(user):
 
         for match in matches:
             # For the keyword, add the relevant user info
-            fname = user.get('first_name','') or ''
-            lname = user.get('last_name', '') or ''
+            fname = user.first_name or ''
+            lname = user.last_name or ''
 
             userObj = {
                 'user_name': fname + ' ' + lname,
@@ -62,7 +62,7 @@ def _process_interests(user):
                 'match_lvl': match[1]
             }
 
-            db['matches'][keyword]['users'][user.get('id')] = userObj
+            db['matches'][keyword]['users'][user.id] = userObj
 
 def get_all_matches(filter_by_org_name = None, filter_by_user_id = None):
     '''For each keyword, for each opp, for each user => create match
@@ -106,12 +106,12 @@ def add_opportunities(opportunityList: list[str]):
     '''
 
     for opp in opportunityList:
-        org = opp.get('organization', '')
-        email = opp.get('email', 'No Email Available')
+        # org = opp.get('organization', '')
+        # email = opp.get('email', 'No Email Available')
 
-        _add_org(org)   # Add the org if it does not exist 
+        _add_org(opp.organization)   # Add the org if it does not exist 
 
-        for role in opp.get('roles', []):
+        for role in opp.roles:
             
             refresh = _add_keyword(role)
 
@@ -120,13 +120,13 @@ def add_opportunities(opportunityList: list[str]):
             newOpp = {
                 'id': oppId, 
                 'role': role, 
-                'email': email, 
-                'org': org
+                'email': opp.email, 
+                'org': opp.organization
                 }
 
             db['opps'][oppId] = newOpp     # Add the opp object to our opps collection
-            db['orgs'][org]['opps'].append(oppId)
-            db['matches'][role]['opps'][oppId] = org
+            db['orgs'][opp.organization]['opps'].append(oppId)
+            db['matches'][role]['opps'][oppId] = opp.organization
 
     return len(opportunityList)
 
@@ -135,7 +135,7 @@ def add_users(userList):
     Fuzzy Matches on interests keywords
     '''
     for user in userList:
-        db['users'][user.get('id')] = user 
+        db['users'][user.id] = user
 
         _process_interests(user)
     
