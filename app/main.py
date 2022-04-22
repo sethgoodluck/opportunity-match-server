@@ -114,13 +114,13 @@ async def add_opportunities(oppList: list):
 
 @app.get("/opportunities", tags=["opportunities"])
 async def get_opportunities(page_num: int = 1, page_size: int = 10):
-    data = [*api.get_all_opportunities().values()]
+    data = api.get_all_opportunities()
     resp = _paginate(data, page_num, page_size)
     return resp
 
 @app.get("/keywords", tags=["opportunities"])
 async def get_keywords(page_num: int = 1, page_size: int = 10):
-    data = [*api.get_all_keywords().values()]
+    data = api.get_all_keywords()
     resp = _paginate(data, page_num, page_size)
     return resp
 
@@ -134,13 +134,13 @@ async def add_users(userList: list):
 
 @app.get("/users", tags=["users"])
 async def get_users(page_num: int = 1, page_size: int = 10):
-    data = [*api.get_all_users().values()]
+    data = api.get_all_users()
     resp = _paginate(data, page_num, page_size)
     return resp
 
 # ORG ENDPOINTS
 @app.get("/orgs", tags=["organizations"])
 async def get_orgs(page_num: int = 1, page_size: int = 10):
-    data = [*api.get_all_orgs()]
+    data = api.get_all_orgs()
     resp = _paginate(data, page_num, page_size)
     return resp
