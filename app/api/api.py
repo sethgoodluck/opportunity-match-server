@@ -1,6 +1,6 @@
 import uuid 
 from app.db import MockDB
-from fuzzywuzzy import process
+from thefuzz import process
 
 db = MockDB.db
 
@@ -49,7 +49,7 @@ def _process_interests(user):
     keywords = db['matches'].keys()
 
     for keyword in keywords:
-        matches = list(process.extractWithoutOrder(keyword, interests, score_cutoff=60))
+        matches = list(process.extractWithoutOrder(keyword, interests, score_cutoff=90))
 
         for match in matches:
             # For the keyword, add the relevant user info
